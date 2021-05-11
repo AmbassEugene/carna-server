@@ -13,7 +13,7 @@ export class RegisterDto {
   @IsNotEmpty()
   confirmPassword: string;
 }
-export class login {
+export class LoginDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
