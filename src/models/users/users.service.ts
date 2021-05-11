@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async register(createUserDto: { email: string; password: string }) {
-    const user = await this.findOne(createUserDto.email);
+    const user = await this.findByEmail(createUserDto.email);
 
     if (user) {
       throw new HttpException(
@@ -30,7 +30,7 @@ export class UsersService {
     const res = await this.userRepository.save(newUser);
 
     return {
-      message: 'Successful. Your OTP has been sent to your email',
+      message: 'Successful. User successfully created',
       email: res.email,
       created: res.created,
       status: HttpStatus.CREATED,
@@ -38,21 +38,27 @@ export class UsersService {
   }
 
   async login(loginDto: { email: string }) {
-    return this.findOne(loginDto.email);
+    return this.findOne(loginDto);
   }
 
   findAll() {
     return `This action returns all users`;
   }
 
-  async findOne(payload: string) {
+  async findOne(payload: { email: string }) {
     const user = this.userRepository.findOne({
-      where: { payload },
+      where: { ...payload },
     });
 
     if (user) return user;
 
     return null;
+  }
+
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: { email: email },
+    });
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
